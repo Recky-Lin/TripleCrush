@@ -63,6 +63,8 @@
     [self checkBlocksNeedCrush];
 }
 
+//方块生成函数
+
 - (SXBlockView *)generateBlock
 {
     SXBlockView *view = [SXBlockView new];
@@ -83,22 +85,42 @@
 {
     UIColor *currentColor;
     
-    NSInteger markCount = 0;
+    NSInteger markCount = 1;
     for (int i = 0; i < self.itemsPerRow; i ++) {
-        markCount = 0;
-        currentColor = nil;
         for (int j = 0; j < self.itemsPerColumn; j ++) {
             SXBlockView *block = self.blockArray[i][j];
-            NSLog(@"%@", block.blockConfig.blockColor);
-            if ([block.blockConfig.blockColor isEqual:currentColor]) {
+            if (j == 0) {
+                currentColor = block.blockConfig.blockColor;
+                markCount = 1;
+            }
+            else if ([block.blockConfig.blockColor isEqual:currentColor]) {
                 markCount++;
-//                currentColor = block.blockConfig.blockColor;
                 if (markCount >= 3) {
-                    NSLog(@"查询到横向三连，当前方块坐标，%d, %d", i, j);
+                    NSLog(@"查询到横向三连末节点坐标，第%d行, 第%d列", i+1, j+1);
                 }
             }
             else {
-                markCount = 0;
+                markCount = 1;
+                currentColor = block.blockConfig.blockColor;
+            }
+        }
+    }
+    
+    for (int i = 0; i < self.itemsPerColumn; i ++) {
+        for (int j = 0; j < self.itemsPerRow; j ++) {
+            SXBlockView *block = self.blockArray[j][i];
+            if (j == 0) {
+                currentColor = block.blockConfig.blockColor;
+                markCount = 1;
+            }
+            else if ([block.blockConfig.blockColor isEqual:currentColor]) {
+                markCount++;
+                if (markCount >= 3) {
+                    NSLog(@"查询到纵向三连末节点坐标，第%d行, 第%d列", j+1, i+1);
+                }
+            }
+            else {
+                markCount = 1;
                 currentColor = block.blockConfig.blockColor;
             }
         }
